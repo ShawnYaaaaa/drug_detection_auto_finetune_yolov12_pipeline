@@ -128,7 +128,7 @@ If you use this project or the YOLOv12 model, please cite:
 
 ## Acknowledgements
 
-This project is based on and extends the work by the YOLOv12 authors [Yunjie Tian et al.](https://github.com/sunsmarterjie/yolov12). We thank them for their excellent contribution to the field.
+This project is based on and extends the work by the YOLOv12 authors [Chien Yeh et al.](https://github.com/sunsmarterjie/yolov12). We thank them for their excellent contribution to the field.
 
 ---
 
