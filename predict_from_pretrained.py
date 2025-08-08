@@ -48,13 +48,12 @@ def predict_on_splits(model_weights, split_dirs, device=None):
             save_txt=True,
             save_conf=True,
             imgsz=640,
-            device=device,  # 改用傳入或動態判斷的 device
+            device=device,  
             project='runs/segment',
             name=f'predict_{split}',
             exist_ok=True
         )
 
-        # 搬移標籤
         results_dir = f"runs/segment/predict_{split}"
         move_labels_to_split_dir(results_dir, img_dir_conv)
         result_summary[split] = len(results) if results else 0

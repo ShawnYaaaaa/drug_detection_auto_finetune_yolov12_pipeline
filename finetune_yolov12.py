@@ -37,11 +37,10 @@ def finetune_yolov12(model_weights, data_yaml, epochs=50, batch_size=16, device=
     best_weights = "runs/segment/train/weights/best.pt"
     if not os.path.isfile(best_weights):
         print(f"[警告] 找不到最佳權重檔案: {best_weights}")
-        best_weights = None  # 或其他預設權重
+        best_weights = None  
     return best_weights
 
 def train_dir_sort_key(x):
-    # 提取資料夾名稱中的數字，例如 train, train2, train3 => 0, 2, 3
     m = re.search(r'train(\d*)', os.path.basename(x))
     return int(m.group(1)) if m and m.group(1).isdigit() else 0
 
@@ -55,7 +54,6 @@ def find_latest_train_weights(runs_segment_dir="runs/segment"):
         print("[警告] 找不到任何 train 相關的資料夾.")
         return None
 
-    # 依照最後修改時間排序，最新的排在最後
     train_dirs.sort(key=lambda x: os.path.getmtime(x))
     latest_train_dir = train_dirs[-1]
     best_weights_path = os.path.join(latest_train_dir, "weights", "best.pt")
@@ -77,48 +75,41 @@ def valid_the_finetuned(model_weights=None, data_yaml=None, device=None):
     else:
         model_weights = converted_backlash(model_weights)
 
-    # 載入訓練好的模型
     print("\n開始執行 YOLO v12 驗證評估階段...")
     model = YOLO(converted_backlash(model_weights))
     print(f"model_weights_path:{model_weights}")
     device = device or ('cuda:0' if torch.cuda.is_available() else 'cpu')
     print(f"device: {model.device}")
     
-    # 從 YAML 讀類別名稱並覆寫 model.names，確保類別一致
     
 
-    # 測試集數據配置文件路徑
     data_path = os.path.normpath(converted_backlash(data_yaml))
     print("模型類別名稱字典:", model.names)
     print("類別數:", len(model.names))
 
-    # 進行測試集評估
     results = model.val(
-        data=data_path,  # 指定 data.yaml，包含測試集路徑
+        data=data_path,  
         task="segment",
         imgsz=640,
-        batch=16,  # 與訓練時保持一致
-        device=device,  # 使用 RTX 4000 GPU
-        split="test",  # 明確指定測試集（需確保 data.yaml 包含train路徑）
-        save=True,  # 保存預測圖像
-        save_txt=True,  # 保存預測標籤
-        save_conf=True,  # 保存置信度
+        batch=16,  
+        device=device,  
+        split="test",  
+        save=True,  
+        save_txt=True,  
+        save_conf=True, 
         max_det = 300,
     )
 
-    # 輸出評估指標
     print("Test Set Metrics:")
     print(f"Precision (P): {float(np.mean(results.box.p)):.3f}") # nparray -> float -> 取mean
     print(f"Recall (R): {float(np.mean(results.box.r)):.3f}") # 同上
     print(f"mAP@50: {float(results.box.map50):.3f}") # map50本來就是單一值
     print(f"mAP@50:95: {float(results.box.map):.3f}") # 同上
 
-    # 按類別輸出詳細指標
     for i, name in enumerate(results.box.p):
         print(f"Class {name}:")
         print(f"  Precision: {float(results.box.p[i]):.3f}")
         print(f"  Recall: {float(results.box.r[i]):.3f}")
-        # print(f"  mAP@50: {float(results.box.maps[i]):.3f}")
         print(f"  mAP@50:95: {float(results.box.maps[i]):.3f}")
 
 def predict_the_finetuned(model_weights=None, test_data_path=None, device=None):

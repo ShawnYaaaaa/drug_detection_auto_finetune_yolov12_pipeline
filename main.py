@@ -51,33 +51,30 @@ def main():
     best_weights = None
     
     split_images_dirs = {
-        'train': converted_backlash(r"C:\SHAWN\Drug_detection\Processed_datas_v1_20\train\images"),
-        'valid': converted_backlash(r"C:\SHAWN\Drug_detection\Processed_datas_v1_20\valid\images"),
-        'test' : converted_backlash(r"C:\SHAWN\Drug_detection\Processed_datas_v1_20\test\images"),
+        'train': converted_backlash(r"...yourdataset\train\images"),
+        'valid': converted_backlash(r"...yourdataset\valid\images"),
+        'test' : converted_backlash(r"...yourdataset\test\images"),
     }
 
-    # 各split labels資料夾（假設與 images 資料夾平行結構的 labels 資料夾）
+    
     split_labels_dirs = {
         split: converted_backlash(path.replace('images', 'labels'))
         for split, path in split_images_dirs.items()
     }
 
-    # 先印出資料夾狀態
+    
     for split, p in split_images_dirs.items():
         print(f"Split: {split}, Images Path: {p}, Exists: {os.path.isdir(p)}")
         print(f"Split: {split}, Labels Path: {split_labels_dirs[split]}, Exists: {os.path.isdir(split_labels_dirs[split])}")
 
-    # 先印出資料夾狀態
+    
     for split, p in split_images_dirs.items():
         print(f"Split: {split}, Images Path: {p}, Exists: {os.path.isdir(p)}")
         print(f"Split: {split}, Labels Path: {split_labels_dirs[split]}, Exists: {os.path.isdir(split_labels_dirs[split])}")
-    
-    
 
 
-    # 執行前處理相關函式，不需 data_yaml
+    
     if args.do_preprocess:
-        # 執行預測流程
         summary = predict_on_splits(model_weights_path, split_images_dirs, device=device_param)
         
         print("\n[main.py]預測流程結束！各集處理摘要：")
@@ -88,17 +85,15 @@ def main():
             print(f"\n開始處理 {split} split 的 labels：{label_folder}")
             main_process_labels(
                 folder_path=label_folder,
-                class_num=15,        # 如果需要統一定 class，可改成其他數字或 None
-                do_fix_seg=True,    # 是否修正mask成對格式
-                do_clean=True,      # 是否清理標籤
-                do_check=True,      # 是否標籤格式錯誤檢查
-                backup=False        # 是否備份原始檔案
+                class_num=15,        
+                do_fix_seg=True,    
+                do_clean=True,      
+                do_check=True,      
+                backup=False       
         )    
         return
 
     
-    
-    # 微調階段
     if args.do_train:
         best_weights = finetune_yolov12(
             model_weights=model_weights_path,
@@ -108,18 +103,14 @@ def main():
             device=device_param
         )
     if best_weights is None:
-        # 非訓練時，嘗試找最新的權重(例如訓練完後正式發生)
         best_weights = find_latest_train_weights()
         if best_weights is None:
-            # 若找不到就用預設權重
             best_weights = model_weights_path
     
-    # 驗證階段
     if args.do_valid:
         print("\n開始執行驗證階段")
         valid_the_finetuned(best_weights, data_yaml_path, device=device_param)
 
-    # 預測階段
     if args.do_predict:
         print("\n開始執行預測階段")
         test_data_path = r"F:\Shawn\Drug_detection\Others_datas\Photo_myself\Processed_datas_v2+v3_180\test\images"
