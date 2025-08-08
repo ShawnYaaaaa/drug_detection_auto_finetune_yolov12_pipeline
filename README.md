@@ -103,13 +103,3 @@ If you use this project or YOLOv12 model, please cite the original authors and t
 This project is based on and extends the work by the YOLOv12 authors [Yunjie Tian et al.](https://github.com/sunsmarterjie/yolov12). We thank them for their excellent contribution to the field.
 
 ---
-
-## Prediction Stage (Expanded)
-
-- The prediction process runs inference on the test dataset using the best fine-tuned YOLOv12 model.
-- Outputs include annotated images and corresponding label files saved in the `predict` directory.
-- The predicted label files follow the YOLO format, detailing detected class indices and bounding box coordinates or segmentation masks.
-- This stage facilitates quick visual verification and downstream analysis of model predictions.
-- Can be triggered with the `--do_predict` flag on the command line, specifying dataset and model paths if needed.
-
----
