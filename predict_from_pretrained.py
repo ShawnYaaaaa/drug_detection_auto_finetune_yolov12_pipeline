@@ -7,17 +7,17 @@ from converted_backlash import converted_backlash
 
 def move_labels_to_split_dir(results_dir, split_images_dir):
     labels_dir = Path(results_dir) / "labels"
-    print(f"搬移標籤: 檢查標籤來源資料夾 {labels_dir}")
+    print(f"Moving labels: Checking source label folder {labels_dir}")
     if not labels_dir.exists():
-        print(f"[警告] {labels_dir} 不存在，無標籤檔案可搬移。")
+        print(f"[Warning] {labels_dir} does not exist, no label files to move.")
         return
 
     target_labels_dir = Path(split_images_dir).parent / "labels"
-    print(f"目標標籤資料夾: {target_labels_dir}")
+    print(f"Target label folder: {target_labels_dir}")
     os.makedirs(target_labels_dir, exist_ok=True)
 
     label_files = list(labels_dir.glob('*.txt'))
-    print(f"找到 {len(label_files)} 個標籤檔案，開始搬移...")
+    print(f"Found {len(label_files)} label files, starting to move...")
     for label_file in label_files:
         shutil.move(str(label_file), str(target_labels_dir / label_file.name))
 
@@ -31,15 +31,15 @@ def predict_on_splits(model_weights, split_dirs, device=None):
         img_dir_conv = converted_backlash(img_dir)
         
         if not os.path.isdir(img_dir_conv):
-            print(f"[警告] {split}集資料夾不存在: {img_dir_conv}，自動跳過。")
+            print(f"[Warning] {split} split folder does not exist: {img_dir_conv}, skipping automatically.")
             continue
 
         imgs = [f for f in os.listdir(img_dir_conv) if f.lower().endswith(('.jpg', '.png'))]
         if not imgs:
-            print(f"[警告] {split}集沒有圖片，跳過。")
+            print(f"[Warning] No images in {split} split, skipping.")
             continue
 
-        print(f"\n[流程] 執行{split}集預測，資料夾: {img_dir_conv}, 共{len(imgs)}張圖。")
+        print(f"\n[Process] Running prediction on {split} split, folder: {img_dir_conv}, total {len(imgs)} images.")
 
         results = model.predict(
             source=img_dir_conv,
@@ -58,5 +58,5 @@ def predict_on_splits(model_weights, split_dirs, device=None):
         move_labels_to_split_dir(results_dir, img_dir_conv)
         result_summary[split] = len(results) if results else 0
 
-    print("labels都處理完成且存入指定路徑中！")
+    print("All labels processed and saved to the specified paths!")
     return result_summary
