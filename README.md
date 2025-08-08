@@ -88,7 +88,7 @@ Installation example:
 ## Contact
 
 For questions, issues, or contributions, please contact:  
-`your.email@example.com` (please replace with your actual email)
+yehshawn133@gmail.com 
 
 ---
 
@@ -100,7 +100,7 @@ If you use this project or YOLOv12 model, please cite the original authors and t
 
 ## Acknowledgements
 
-This project builds upon and extends the contributions of the YOLOv12 authors [Chien Yeh et al.](https://github.com/sunsmarterjie/yolov12). We sincerely thank them for their outstanding work in this field.
+This project is based on and extends the work by the YOLOv12 authors [Yunjie Tian et al.](https://github.com/sunsmarterjie/yolov12). We thank them for their excellent contribution to the field.
 
 ---
 
