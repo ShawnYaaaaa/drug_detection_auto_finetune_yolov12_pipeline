@@ -15,7 +15,7 @@ def main():
 
     parser = argparse.ArgumentParser(description="YOLOv12 微調與後續操作")
     parser.add_argument('--do_preprocess', action='store_true', help="是否執行前處理")
-    parser.add_argument('--epochs', type=int, default=5, help="訓練Epoch數")
+    parser.add_argument('--epochs', type=int, default=50, help="訓練Epoch數")
     parser.add_argument('--batch_size', type=int, default=16, help="訓練 batch size")
     parser.add_argument('--device', type=str, default=None, help="使用的GPU裝置號")
     parser.add_argument('--data_yaml', type=str, default=None, help="資料集 yaml 路徑（可省略）")
